@@ -1,0 +1,31 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'ubuntu-basic-builder' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+# If the 'msa-ubuntu-builder' assemble script is executed with the '-h' flag, print the usage.
+if [[ "$1" == "-h" ]]; then
+	exec /home/ajanmsa/s2iscripts/usage
+fi
+
+echo "---> Installing application source..."
+cp -Rf "/home/ajanmsa/sourceandartifacts/src/" "/home/ajanmsa/sourcecode/"
+
+echo "---> Building application from source..."
+# Adding build steps for the application.
+if [ -f "/home/ajanmsa/sourcecode/build.gradle" ]; then
+  
+  echo "Building executable jar for ${artifactId} ...."
+  cd /home/ajanmsa/sourcecode
+  gradle clean build
+  echo "... done"
+  if [ -f "/home/ajanmsa/sourcecode/build/libs/Greetings-0.0.1-SNAPSHOT.jar" ]; then
+    echo "Copying service fat jar Greetings-0.0.1-SNAPSHOT.jar to apps directory "
+    cp -a "/home/ajanmsa/sourcecode/build/libs/Greetings-0.0.1-SNAPSHOT.jar" "/home/ajanmsa/apps/"
+    chmod +x "/home/ajanmsa/apps/Greetings-0.0.1-SNAPSHOT.jar"
+  fi
+fi

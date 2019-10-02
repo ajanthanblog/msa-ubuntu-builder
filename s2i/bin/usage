@@ -1,0 +1,19 @@
+#!/bin/bash -e
+cat <<EOF
+This is the ubuntu-basic-builder S2I image:
+To use it, install S2I: https://github.com/openshift/source-to-image
+
+Sample invocation:
+1) Building the builder image
+docker build -t msa-ubuntu-builder .
+
+2) s2i build <source code path/URL> ubuntu-basic-builder <application image>
+eg:
+s2i build https://github.com/ajanthanblog/greeting.git msa-ubuntu-builder msa-ubuntu-builder-appimage
+
+3) You can then run the resulting image via:
+docker run <application image>
+eg:
+docker run -d -p 8097:8097 msa-ubuntu-builder-appimage
+
+EOF
